@@ -1,0 +1,33 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out the code
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Java environment
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17' 
+
+    # Step 3: Build the JAR file
+    - name: Build with Maven
+      run: |
+        ./mvnw clean package -DskipTests
+
+    # Step 4: Save the JAR file as an artifact (optional)
+    - name: Upload JAR file
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-jar
+        path: target/*.jar
