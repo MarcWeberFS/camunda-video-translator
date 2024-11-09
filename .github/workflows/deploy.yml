@@ -52,6 +52,8 @@ jobs:
         env:
           HOST: ${{ secrets.AWS_EC2_HOST }}
           USER: ${{ secrets.AWS_EC2_USER }}
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           echo "${{ secrets.AWS_EC2_PEM }}" > /tmp/key.pem
           chmod 600 /tmp/key.pem
@@ -59,7 +61,7 @@ jobs:
           echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
           # SSH into EC2 and pull the images from ECR
-          ssh -i /tmp/key.pem "$USER@$HOST" << 'EOF'
+          ssh -i /tmp/key.pem "$USER@$HOST" << EOF
             docker network create my-app-network || true
             docker stop backend frontend || true
             docker rm backend frontend || true
@@ -68,3 +70,4 @@ jobs:
             docker run -d --network=my-app-network --name backend -p 8080:8080 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
             docker run -d --network=my-app-network --name frontend -p 80:80 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
           EOF
+
