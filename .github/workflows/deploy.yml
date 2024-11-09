@@ -10,33 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set execute permissions for Maven Wrapper
         run: chmod +x ./video-downloader-backend/mvnw
 
-      # Step 2: Set up JDK (for backend build)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # Step 3: Build backend with Maven
       - name: Build backend with Maven
         run: |
           ./mvnw clean package -DskipTests
         working-directory: ./video-downloader-backend
 
-      # Step 4: Build Docker images for backend and frontend
       - name: Build Docker images
         run: |
           docker build -t my-backend ./video-downloader-backend
           docker build -t my-frontend ./video-downloader-frontend
 
-      # Step 5: Deploy Docker images to EC2
       - name: Deploy Docker images to EC2
         env:
           HOST: ${{ secrets.AWS_EC2_HOST }}
@@ -45,6 +40,9 @@ jobs:
           # Save the private key to a file and set permissions
           echo "${{ secrets.AWS_EC2_PEM }}" > /tmp/key.pem
           chmod 600 /tmp/key.pem
+
+          # Configure SSH to disable strict host key checking
+          echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
           # Copy Dockerfiles to EC2
           scp -i /tmp/key.pem video-downloader-backend/Dockerfile "$USER@$HOST:~/backend"
