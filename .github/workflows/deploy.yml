@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build, Deploy, and Run on EC2
 
 on:
   push:
@@ -6,25 +6,47 @@ on:
       - master
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      # Step 2: Set up JDK (for backend build)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Build with Maven
-      run: |
-        ./mvnw clean package -DskipTests
+      # Step 3: Build backend with Maven
+      - name: Build backend with Maven
+        run: |
+          ./mvnw clean package -DskipTests
+        working-directory: ./video-downloader-backend
 
-    - name: Upload JAR file
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-jar
-        path: target/*.jar
+      # Step 4: Build Docker images for backend and frontend
+      - name: Build Docker images
+        run: |
+          docker build -t my-backend ./video-downloader-backend  # Updated path for backend Dockerfile and JAR
+          docker build -t my-frontend ./video-downloader-frontend  # Updated path for frontend Dockerfile
+
+      # Step 5: Upload Docker images to EC2 instance and run containers
+      - name: Deploy Docker images to EC2
+        env:
+          HOST: ${{ secrets.AWS_EC2_HOST }}
+          USER: ${{ secrets.AWS_EC2_USER }}
+          KEY: ${{ secrets.AWS_EC2_PEM }}
+        run: |
+          scp -i "$KEY" video-downloader-backend/Dockerfile "$USER@$HOST:~/backend"
+          scp -i "$KEY" video-downloader-frontend/Dockerfile "$USER@$HOST:~/frontend"
+          ssh -i "$KEY" "$USER@$HOST" << 'EOF'
+            # Log into EC2 instance and run Docker containers
+            docker network create my-app-network || true
+            docker stop backend frontend || true
+            docker rm backend frontend || true
+            docker run -d --network=my-app-network --name backend -p 8080:8080 my-backend
+            docker run -d --network=my-app-network --name frontend -p 80:80 my-frontend
+          EOF
