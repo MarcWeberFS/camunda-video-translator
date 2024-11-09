@@ -27,35 +27,44 @@ jobs:
           ./mvnw clean package -DskipTests
         working-directory: ./video-downloader-backend
 
-      - name: Build Docker images
+      # Log in to Amazon ECR
+      - name: Log in to Amazon ECR
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          docker build -t my-backend ./video-downloader-backend
-          docker build -t my-frontend ./video-downloader-frontend
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
+      # Build and Push Docker images to ECR
+      - name: Build and Push Docker images
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend ./video-downloader-backend
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend ./video-downloader-frontend
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
+
+      # Deploy Docker images to EC2
       - name: Deploy Docker images to EC2
         env:
           HOST: ${{ secrets.AWS_EC2_HOST }}
           USER: ${{ secrets.AWS_EC2_USER }}
         run: |
-          # Save the private key to a file and set permissions
           echo "${{ secrets.AWS_EC2_PEM }}" > /tmp/key.pem
           chmod 600 /tmp/key.pem
-
-          # Create .ssh directory if it doesn't exist
           mkdir -p ~/.ssh
-
-          # Configure SSH to disable strict host key checking
           echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
-          # Copy Dockerfiles to EC2
-          scp -i /tmp/key.pem video-downloader-backend/Dockerfile "$USER@$HOST:~/backend"
-          scp -i /tmp/key.pem video-downloader-frontend/Dockerfile "$USER@$HOST:~/frontend"
-
-          # SSH into EC2 instance and deploy Docker containers
+          # SSH into EC2 and pull the images from ECR
           ssh -i /tmp/key.pem "$USER@$HOST" << 'EOF'
             docker network create my-app-network || true
             docker stop backend frontend || true
             docker rm backend frontend || true
-            docker run -d --network=my-app-network --name backend -p 8080:8080 my-backend
-            docker run -d --network=my-app-network --name frontend -p 80:80 my-frontend
+            docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
+            docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
+            docker run -d --network=my-app-network --name backend -p 8080:8080 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
+            docker run -d --network=my-app-network --name frontend -p 80:80 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
           EOF
