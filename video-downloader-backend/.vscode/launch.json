@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Application",
+      "request": "launch",
+      "mainClass": "Application",
+      "projectName": "video-downloader"
+    },
+    {
+      "type": "java",
+      "name": "Launch Video Downloader Backend",
+      "request": "launch",
+      "mainClass": "ch.marc.Application",
+      "projectName": "video-downloader-backend",
+      "modulePaths": [
+        "${workspaceFolder}/video-downloader-backend/target/classes"
+      ],
+      "classPaths": [
+        "${workspaceFolder}/video-downloader-backend/target/classes",
+        "${env:USERPROFILE}/.m2/repository"
+      ]
+    }
+  ]
+}
