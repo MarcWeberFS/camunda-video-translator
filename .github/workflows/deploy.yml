@@ -33,20 +33,25 @@ jobs:
       # Step 4: Build Docker images for backend and frontend
       - name: Build Docker images
         run: |
-          docker build -t my-backend ./video-downloader-backend  # Updated path for backend Dockerfile and JAR
-          docker build -t my-frontend ./video-downloader-frontend  # Updated path for frontend Dockerfile
+          docker build -t my-backend ./video-downloader-backend
+          docker build -t my-frontend ./video-downloader-frontend
 
-      # Step 5: Upload Docker images to EC2 instance and run containers
+      # Step 5: Deploy Docker images to EC2
       - name: Deploy Docker images to EC2
         env:
           HOST: ${{ secrets.AWS_EC2_HOST }}
           USER: ${{ secrets.AWS_EC2_USER }}
-          KEY: ${{ secrets.AWS_EC2_PEM }}
         run: |
-          scp -i "$KEY" video-downloader-backend/Dockerfile "$USER@$HOST:~/backend"
-          scp -i "$KEY" video-downloader-frontend/Dockerfile "$USER@$HOST:~/frontend"
-          ssh -i "$KEY" "$USER@$HOST" << 'EOF'
-            # Log into EC2 instance and run Docker containers
+          # Save the private key to a file and set permissions
+          echo "${{ secrets.AWS_EC2_PEM }}" > /tmp/key.pem
+          chmod 600 /tmp/key.pem
+
+          # Copy Dockerfiles to EC2
+          scp -i /tmp/key.pem video-downloader-backend/Dockerfile "$USER@$HOST:~/backend"
+          scp -i /tmp/key.pem video-downloader-frontend/Dockerfile "$USER@$HOST:~/frontend"
+
+          # SSH into EC2 instance and deploy Docker containers
+          ssh -i /tmp/key.pem "$USER@$HOST" << 'EOF'
             docker network create my-app-network || true
             docker stop backend frontend || true
             docker rm backend frontend || true
