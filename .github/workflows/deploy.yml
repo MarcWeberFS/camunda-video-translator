@@ -41,6 +41,9 @@ jobs:
           echo "${{ secrets.AWS_EC2_PEM }}" > /tmp/key.pem
           chmod 600 /tmp/key.pem
 
+          # Create .ssh directory if it doesn't exist
+          mkdir -p ~/.ssh
+
           # Configure SSH to disable strict host key checking
           echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
