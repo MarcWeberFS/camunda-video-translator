@@ -1,0 +1,7 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.project.sourcePaths": [
+        "video-downloader-backend/src/main/java"
+    ],
+    "java.project.outputPath": "video-downloader-backend/target/classes"
+}
