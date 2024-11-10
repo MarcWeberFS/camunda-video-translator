@@ -8,8 +8,7 @@
     <bpmn:serviceTask id="Activity_1a3s07l" name="Validate URL" camunda:delegateExpression="${validateInstagramUrl}">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="url">${}</camunda:inputParameter>
-          <camunda:outputParameter name="validUrl">validUrl</camunda:outputParameter>
+          <camunda:inputParameter name="url">${url}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_17td0b4</bpmn:incoming>
@@ -17,18 +16,15 @@
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_0eref7l">
       <bpmn:incoming>Flow_0x2fjzn</bpmn:incoming>
-      <bpmn:outgoing>Flow_0l07asz</bpmn:outgoing>
       <bpmn:outgoing>Flow_0isooy1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0l07asz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0x2fjzn" sourceRef="Activity_1a3s07l" targetRef="Gateway_0eref7l" />
-    <bpmn:serviceTask id="Activity_0apq88t" name="API Call Instagram">
+    <bpmn:serviceTask id="Activity_0apq88t" name="API Call Instagram" camunda:delegateExpression="">
       <bpmn:incoming>Flow_0l07asz</bpmn:incoming>
       <bpmn:outgoing>Flow_1wi0v5y</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0l07asz" sourceRef="Gateway_0eref7l" targetRef="Activity_0apq88t">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validateUrl==true}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0xx5o3e" name="Display Error Message">
+    <bpmn:serviceTask id="Activity_0xx5o3e" name="Display Error Message" camunda:delegateExpression="">
       <bpmn:incoming>Flow_0isooy1</bpmn:incoming>
       <bpmn:outgoing>Flow_1p9su5x</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -39,12 +35,12 @@
       <bpmn:incoming>Flow_1p9su5x</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1p9su5x" sourceRef="Activity_0xx5o3e" targetRef="Event_1kcpen0" />
-    <bpmn:serviceTask id="Activity_1uzicf2" name="Store Video S3">
+    <bpmn:serviceTask id="Activity_1uzicf2" name="Store Video S3" camunda:delegateExpression="">
       <bpmn:incoming>Flow_1wi0v5y</bpmn:incoming>
       <bpmn:outgoing>Flow_1f486hu</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1wi0v5y" sourceRef="Activity_0apq88t" targetRef="Activity_1uzicf2" />
-    <bpmn:serviceTask id="Activity_1owln46" name="Generate Download Link">
+    <bpmn:serviceTask id="Activity_1owln46" name="Generate Download Link" camunda:delegateExpression="">
       <bpmn:incoming>Flow_1f486hu</bpmn:incoming>
       <bpmn:outgoing>Flow_0zat7ti</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -53,6 +49,9 @@
       <bpmn:incoming>Flow_0zat7ti</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0zat7ti" sourceRef="Activity_1owln46" targetRef="Event_14tt3pp" />
+    <bpmn:sequenceFlow id="Flow_0l07asz" sourceRef="Gateway_0eref7l" targetRef="Activity_0apq88t">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validateUrl==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1ua4l8j">
@@ -105,13 +104,13 @@
         <di:waypoint x="450" y="230" />
         <di:waypoint x="530" y="230" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1wi0v5y_di" bpmnElement="Flow_1wi0v5y">
-        <di:waypoint x="630" y="117" />
-        <di:waypoint x="690" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1p9su5x_di" bpmnElement="Flow_1p9su5x">
         <di:waypoint x="630" y="230" />
         <di:waypoint x="692" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wi0v5y_di" bpmnElement="Flow_1wi0v5y">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="690" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1f486hu_di" bpmnElement="Flow_1f486hu">
         <di:waypoint x="790" y="117" />

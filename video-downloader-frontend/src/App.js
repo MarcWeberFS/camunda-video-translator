@@ -1,22 +1,47 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [url, setUrl] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/start-download?url=${encodeURIComponent(url)}`, {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        setMessage(result);
+      } else {
+        setMessage("Failed to start download process.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("An error occurred.");
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Instagram Video Downloader</h1>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Enter Instagram URL:
+            <input
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              required
+            />
+          </label>
+          <button type="submit">Download Video</button>
+        </form>
+        {message && <p>{message}</p>}
       </header>
     </div>
   );
