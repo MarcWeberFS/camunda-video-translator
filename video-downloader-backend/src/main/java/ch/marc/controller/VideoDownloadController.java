@@ -37,14 +37,15 @@ public class VideoDownloadController {
         return ResponseEntity.ok(response);
     }
 
-    @Autowired
-    private HistoryService historyService;
-    
     @GetMapping("/download-link")
-    public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
-
-        return ResponseEntity.ok(Collections.singletonMap("downloadLink", "downloadLink"));
+    public ResponseEntity<String> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
+        // Log the process instance ID to confirm it's being passed correctly
+        System.out.println("Received processInstanceId: " + processInstanceId);
+    
+        // Return a simple string response for testing
+        return ResponseEntity.ok("ProcessInstanceId received: " + processInstanceId);
     }
+    
     
 
 }
