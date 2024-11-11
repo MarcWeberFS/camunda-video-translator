@@ -20,19 +20,17 @@ public class VideoDownloadController {
     private RuntimeService runtimeService;
 
     @PostMapping("/start-download")
-    public ResponseEntity<String> startDownloadProcess(@RequestParam("url") String url, 
-                                                       @RequestParam("callbackUrl") String callbackUrl) {
+    public ResponseEntity<Map<String, String>> startDownloadProcess(@RequestParam("url") String url) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("url", url);
-        variables.put("callbackUrl", callbackUrl);  // Add the callback URL to the process variables
-    
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1ua4l8j", variables);
-    
-        return ResponseEntity.ok("Process started with URL: " + url + " and process instance ID: " + processInstance.getId());
-    }
-    
 
-    // Endpoint to retrieve the S3 download link
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1ua4l8j", variables);
+        Map<String, String> response = new HashMap<>();
+        response.put("processInstanceId", processInstance.getId());
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/download-link")
     public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
         String downloadLink = (String) runtimeService.getVariable(processInstanceId, "downloadLink");
@@ -44,4 +42,3 @@ public class VideoDownloadController {
         }
     }
 }
-
