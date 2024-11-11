@@ -1,0 +1,1 @@
+Set local environment script path: $env:VIDEO_DOWNLOADER_SCRIPT_PATH = "C:\Code\video-downloader\video-downloader-backend\src\main\resources\scripts\video_downloader.py"

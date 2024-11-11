@@ -6,10 +6,14 @@ import java.io.InputStreamReader;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class InstagramVideoDownloaderDelegate implements JavaDelegate {
+
+    @Value("${video.downloader.script-path}")
+    private String scriptPath;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -19,6 +23,8 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
         String s3Folder = "instagram-videos";
 
         String result = downloadInstagramVideo(url, s3BucketName, s3Folder);
+
+        System.out.println("Download result: " + result);
         
         execution.setVariable("downloadResult", result);
     }
@@ -26,8 +32,12 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
     private String downloadInstagramVideo(String url, String s3BucketName, String s3Folder) {
         String result = "";
         try {
-            String pythonExecutable = "/usr/bin/python3";
-            String scriptPath = "/app/scripts/video_downloader.py";            
+            String pythonExecutable = "python3";
+            
+            if (scriptPath == null || scriptPath.isEmpty()) {
+                System.out.println("VIDEO_DOWNLOADER_SCRIPT_PATH environment variable not set. Using default script path.");
+                scriptPath = "/app/scripts/video_downloader.py";
+            }
 
             ProcessBuilder processBuilder = new ProcessBuilder(
                     pythonExecutable,

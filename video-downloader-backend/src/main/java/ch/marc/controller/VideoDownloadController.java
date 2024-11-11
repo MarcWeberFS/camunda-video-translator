@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://3.127.36.67")
+@CrossOrigin(origins = "http://3.127.36.67, http://localhost:3000, http://localhost:8080")
 public class VideoDownloadController {
 
     @Autowired

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import config from './config';
 
 function App() {
   const [url, setUrl] = useState('');
@@ -12,8 +13,7 @@ function App() {
     setDownloadLink(null);
 
     try {
-      // Start the download process and get the processInstanceId
-      const response = await fetch(`http://3.127.36.67:8080/api/start-download?url=${encodeURIComponent(url)}`, {
+      const response = await fetch(`${config.apiBaseUrl}/start-download?url=${encodeURIComponent(url)}`, {
         method: 'POST',
       });
 
@@ -34,7 +34,7 @@ function App() {
   const pollForDownloadLink = (instanceId) => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch(`http://3.127.36.67:8080/api/download-link?processInstanceId=${instanceId}`);
+        const response = await fetch(`${config.apiBaseUrl}/download-link?processInstanceId=${instanceId}`);
         
         if (response.ok) {
           const result = await response.json();
@@ -42,7 +42,6 @@ function App() {
           setMessage("Download link is ready!");
           clearInterval(intervalId);
         } else if (response.status === 204) {
-          // Link is not ready yet, keep polling
           setMessage("Waiting for download link to be ready...");
         } else {
           setMessage("Failed to retrieve download link.");
@@ -53,7 +52,7 @@ function App() {
         setMessage("An error occurred while waiting for the download link.");
         clearInterval(intervalId);
       }
-    }, 5000); // Poll every 5 seconds
+    }, 5000);
   };
 
   return (
