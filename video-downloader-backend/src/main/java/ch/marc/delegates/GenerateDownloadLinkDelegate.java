@@ -25,7 +25,7 @@ public class GenerateDownloadLinkDelegate implements JavaDelegate{
         }
 
         if (downloadLink == null) {
-            System.err.println("No S3 URL found in downloadResult.");
+            System.err.println("No S3 URL found in downloadResult :()");
         } else {
             execution.setVariable("downloadLink", downloadLink);
             System.out.println("Extracted S3 URL: " + downloadLink);
