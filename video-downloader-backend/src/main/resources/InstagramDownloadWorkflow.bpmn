@@ -39,7 +39,7 @@
     <bpmn:sequenceFlow id="Flow_0l07asz" sourceRef="Gateway_0eref7l" targetRef="Activity_0apq88t">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validateUrl==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_1uzicf2" name="Generate Download Link" camunda:delegateExpression="">
+    <bpmn:serviceTask id="Activity_1uzicf2" name="Generate Download Link" camunda:delegateExpression="${generateDownloadLinkDelegate}">
       <bpmn:incoming>Flow_1wi0v5y</bpmn:incoming>
       <bpmn:outgoing>Flow_1xaj742</bpmn:outgoing>
     </bpmn:serviceTask>
