@@ -46,16 +46,14 @@
     <bpmn:intermediateThrowEvent id="Event_1qz1jou">
       <bpmn:incoming>Flow_1xaj742</bpmn:incoming>
       <bpmn:outgoing>Flow_0s8cha7</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0u4wfas" camunda:delegateExpression="${downloadLinkNotifier}" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0u4wfas" camunda:class="ch.marc.listener.DownloadLinkNotifier" />
     </bpmn:intermediateThrowEvent>
     <bpmn:sequenceFlow id="Flow_1xaj742" sourceRef="Activity_1uzicf2" targetRef="Event_1qz1jou" />
     <bpmn:endEvent id="Event_0atskyd">
-        <bpmn:extensionElements>
-            <camunda:executionListener
-                event="end"
-                delegateExpression="${downloadLinkNotifier}" />
-        </bpmn:extensionElements>
-        <bpmn:incoming>Flow_0s8cha7</bpmn:incoming>
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${downloadLinkNotifier}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s8cha7</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0s8cha7" sourceRef="Event_1qz1jou" targetRef="Event_0atskyd" />
   </bpmn:process>
@@ -100,10 +98,6 @@
         <di:waypoint x="370" y="117" />
         <di:waypoint x="425" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0l07asz_di" bpmnElement="Flow_0l07asz">
-        <di:waypoint x="475" y="117" />
-        <di:waypoint x="530" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0isooy1_di" bpmnElement="Flow_0isooy1">
         <di:waypoint x="450" y="142" />
         <di:waypoint x="450" y="230" />
@@ -116,6 +110,10 @@
       <bpmndi:BPMNEdge id="Flow_1wi0v5y_di" bpmnElement="Flow_1wi0v5y">
         <di:waypoint x="630" y="117" />
         <di:waypoint x="690" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0l07asz_di" bpmnElement="Flow_0l07asz">
+        <di:waypoint x="475" y="117" />
+        <di:waypoint x="530" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xaj742_di" bpmnElement="Flow_1xaj742">
         <di:waypoint x="790" y="117" />

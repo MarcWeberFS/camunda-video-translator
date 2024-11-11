@@ -12,6 +12,8 @@ WORKDIR /app
 # Copy the built JAR file into the container (Assuming your JAR is in the target directory)
 COPY target/*.jar app.jar
 
+COPY src/main/resources/scripts/video_downloader.py /app/scripts/
+
 # Expose the backend port (replace 8080 if your Spring Boot app uses a different port)
 EXPOSE 8080
 
