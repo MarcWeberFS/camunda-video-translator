@@ -46,7 +46,7 @@
     <bpmn:intermediateThrowEvent id="Event_1qz1jou">
       <bpmn:incoming>Flow_1xaj742</bpmn:incoming>
       <bpmn:outgoing>Flow_0s8cha7</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0u4wfas" camunda:class="ch.marc.listener.DownloadLinkNotifier" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0u4wfas" camunda:delegateExpression="${downloadLinkNotifier}" />
     </bpmn:intermediateThrowEvent>
     <bpmn:sequenceFlow id="Flow_1xaj742" sourceRef="Activity_1uzicf2" targetRef="Event_1qz1jou" />
     <bpmn:endEvent id="Event_0atskyd">
