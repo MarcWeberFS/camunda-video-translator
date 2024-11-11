@@ -1,28 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 
 function App() {
   const [url, setUrl] = useState('');
   const [message, setMessage] = useState('');
-  const [downloadLink, setDownloadLink] = useState(null);
-  const [processInstanceId, setProcessInstanceId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage("Starting download process...");
-    setDownloadLink(null);
+
+    const callbackUrl = 'http://3.127.36.67:3000/api/download-link-notification';
 
     try {
-      const response = await fetch(`http://3.127.36.67:8080/api/start-download?url=${encodeURIComponent(url)}`, {
+      const response = await fetch(`http://3.127.36.67:8080/api/start-download?url=${encodeURIComponent(url)}&callbackUrl=${encodeURIComponent(callbackUrl)}`, {
         method: 'POST',
       });
 
       if (response.ok) {
         const result = await response.text();
-        const instanceId = result.split("process instance ID: ")[1];
-        setProcessInstanceId(instanceId);
         setMessage(result);
-        pollForDownloadLink(instanceId);
       } else {
         setMessage("Failed to start download process.");
       }
@@ -31,37 +27,6 @@ function App() {
       setMessage("An error occurred.");
     }
   };
-
-  const pollForDownloadLink = async (instanceId) => {
-    const intervalId = setInterval(async () => {
-      try {
-        const response = await fetch(`http://3.127.36.67:8080/api/download-link?processInstanceId=${instanceId}`);
-        if (response.ok) {
-          const result = await response.json();
-          if (result.downloadLink) {
-            setDownloadLink(result.downloadLink);
-            setMessage("Download link is ready!");
-            clearInterval(intervalId);
-          }
-        } else {
-          setMessage("Waiting for download link to be ready...");
-        }
-      } catch (error) {
-        console.error("Error while polling for download link:", error);
-        setMessage("An error occurred while waiting for the download link.");
-        clearInterval(intervalId);
-      }
-    }, 5000); // Poll every 5 seconds
-  };
-
-  useEffect(() => {
-    if (downloadLink) {
-      const a = document.createElement('a');
-      a.href = downloadLink;
-      a.download = 'instagram-video.mp4';
-      a.click();
-    }
-  }, [downloadLink]);
 
   return (
     <div className="App">

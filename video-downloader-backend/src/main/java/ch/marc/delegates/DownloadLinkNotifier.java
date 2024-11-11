@@ -1,5 +1,7 @@
 package ch.marc.delegates;
 
+import java.util.Collections;
+
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -11,11 +13,12 @@ public class DownloadLinkNotifier implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         String downloadLink = (String) execution.getVariable("downloadLink");
-        String callbackUrl = (String) execution.getVariable("callbackUrl"); 
+        String callbackUrl = (String) execution.getVariable("callbackUrl");
+
         if (downloadLink != null && callbackUrl != null) {
             RestTemplate restTemplate = new RestTemplate();
             try {
-                restTemplate.postForEntity(callbackUrl, downloadLink, String.class);
+                restTemplate.postForEntity(callbackUrl, Collections.singletonMap("downloadLink", downloadLink), String.class);
                 System.out.println("Download link sent to client at callback URL: " + callbackUrl);
             } catch (Exception e) {
                 System.err.println("Failed to send download link: " + e.getMessage());
