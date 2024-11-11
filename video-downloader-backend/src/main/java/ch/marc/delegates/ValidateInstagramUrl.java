@@ -10,12 +10,16 @@ public class ValidateInstagramUrl implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         String url = (String) execution.getVariable("url");
+        boolean validateUrl = false;
+        System.out.println("URL: " + url);
         if (url == null || !url.startsWith("https://www.instagram.com/")) {
-            execution.setVariable("urlValid", true);
+            validateUrl = false;
         } else {
             System.out.println("Valid Instagram URL");
-            execution.setVariable("urlValid", false);
+            validateUrl = true;
         }
+
+        execution.setVariable("validateUrl", validateUrl);
     }
     
 }
