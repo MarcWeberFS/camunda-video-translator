@@ -9,7 +9,7 @@ function App() {
     event.preventDefault();
     setMessage("Starting download process...");
 
-    const callbackUrl = 'http://3.127.36.67:3000/api/download-link-notification';
+    const callbackUrl = 'http://3.127.36.67:3000/api/download-link-notification'; // Define the callback URL
 
     try {
       const response = await fetch(`http://3.127.36.67:8080/api/start-download?url=${encodeURIComponent(url)}&callbackUrl=${encodeURIComponent(callbackUrl)}`, {
