@@ -1,24 +1,24 @@
 # Use an official OpenJDK image as the base
 FROM openjdk:17-jdk-slim
 
-# Install Python
+# Install Python and necessary dependencies
 RUN apt-get update && \
-    apt-get install -y python3 && \
+    apt-get install -y python3 python3-pip && \
+    pip3 install instaloader && \
+    pip3 install boto3 && \
     rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy the built JAR file into the container (Assuming your JAR is in the target directory)
+# Copy the built JAR file into the container
 COPY target/*.jar app.jar
 
+# Copy the Python script into the container
 COPY src/main/resources/scripts/video_downloader.py /app/scripts/
 
-# Expose the backend port (replace 8080 if your Spring Boot app uses a different port)
+# Expose the backend port
 EXPOSE 8080
-
-# Set the PATH environment variable to include the directory of the Python executable
-ENV PATH="/usr/bin:${PATH}"
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

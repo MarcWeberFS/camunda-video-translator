@@ -1,15 +1,15 @@
-package ch.marc.listener;
+package ch.marc.delegates;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class DownloadLinkNotifier implements ExecutionListener {
+public class DownloadLinkNotifier implements JavaDelegate {
 
     @Override
-    public void notify(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) throws Exception {
         String downloadLink = (String) execution.getVariable("downloadLink");
         String callbackUrl = (String) execution.getVariable("callbackUrl"); 
         if (downloadLink != null && callbackUrl != null) {
