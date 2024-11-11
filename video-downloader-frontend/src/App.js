@@ -5,7 +5,6 @@ function App() {
   const [url, setUrl] = useState('');
   const [message, setMessage] = useState('');
   const [downloadLink, setDownloadLink] = useState(null);
-  const [processInstanceId, setProcessInstanceId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,10 +18,8 @@ function App() {
 
       if (response.ok) {
         const result = await response.text();
-        const instanceId = result.match(/process instance ID: (.+)/)[1]; // Extracts processInstanceId
-        setProcessInstanceId(instanceId);
         setMessage(result);
-        pollForDownloadLink(instanceId);
+        pollForDownloadLink();
       } else {
         setMessage("Failed to start download process.");
       }
@@ -32,10 +29,10 @@ function App() {
     }
   };
 
-  const pollForDownloadLink = async (instanceId) => {
+  const pollForDownloadLink = async () => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch(`http://3.127.36.67/api/download-link?processInstanceId=${instanceId}`);
+        const response = await fetch(`http://3.127.36.67:8080/api/get-download-link?processInstanceId=YOUR_PROCESS_INSTANCE_ID`);
         if (response.ok) {
           const result = await response.json();
           if (result.downloadLink) {
@@ -43,7 +40,7 @@ function App() {
             setMessage("Download link is ready!");
             clearInterval(intervalId); // Stop polling once the link is available
           }
-        } else {
+        } else if (response.status === 204) {
           setMessage("Waiting for download link to be ready...");
         }
       } catch (error) {

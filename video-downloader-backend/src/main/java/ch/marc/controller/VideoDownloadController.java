@@ -3,8 +3,11 @@ package ch.marc.controller;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,16 +33,14 @@ public class VideoDownloadController {
         return "Process started with URL: " + url + " and process instance ID: " + processInstance.getId();
     }
 
-    @PostMapping("/download-link-notification")
-    public void receiveDownloadLink(@RequestParam("downloadLink") String downloadLink, 
-                                    @RequestParam("processInstanceId") String processInstanceId) {
-        downloadLinks.put(processInstanceId, downloadLink);
-    }
+    @GetMapping("/get-download-link")
+    public ResponseEntity<?> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
+        String downloadLink = (String) runtimeService.getVariable(processInstanceId, "downloadLink");
 
-    @GetMapping("/download-link")
-    public Map<String, String> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
-        Map<String, String> response = new HashMap<>();
-        response.put("downloadLink", downloadLinks.get(processInstanceId));
-        return response;
+        if (downloadLink != null) {
+            return ResponseEntity.ok(Collections.singletonMap("downloadLink", downloadLink));
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Download link is not ready yet.");
+        }
     }
 }
