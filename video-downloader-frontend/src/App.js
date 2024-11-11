@@ -5,6 +5,7 @@ function App() {
   const [url, setUrl] = useState('');
   const [message, setMessage] = useState('');
   const [downloadLink, setDownloadLink] = useState(null);
+  const [processInstanceId, setProcessInstanceId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,8 +19,10 @@ function App() {
 
       if (response.ok) {
         const result = await response.text();
+        const instanceId = result.split("process instance ID: ")[1];
+        setProcessInstanceId(instanceId);
         setMessage(result);
-        pollForDownloadLink();
+        pollForDownloadLink(instanceId);
       } else {
         setMessage("Failed to start download process.");
       }
@@ -29,18 +32,18 @@ function App() {
     }
   };
 
-  const pollForDownloadLink = async () => {
+  const pollForDownloadLink = async (instanceId) => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch(`http://3.127.36.67:8080/api/get-download-link?processInstanceId=YOUR_PROCESS_INSTANCE_ID`);
+        const response = await fetch(`http://3.127.36.67:8080/api/download-link?processInstanceId=${instanceId}`);
         if (response.ok) {
           const result = await response.json();
           if (result.downloadLink) {
             setDownloadLink(result.downloadLink);
             setMessage("Download link is ready!");
-            clearInterval(intervalId); // Stop polling once the link is available
+            clearInterval(intervalId);
           }
-        } else if (response.status === 204) {
+        } else {
           setMessage("Waiting for download link to be ready...");
         }
       } catch (error) {
@@ -53,7 +56,6 @@ function App() {
 
   useEffect(() => {
     if (downloadLink) {
-      // Automatically trigger the download
       const a = document.createElement('a');
       a.href = downloadLink;
       a.download = 'instagram-video.mp4';
