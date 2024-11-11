@@ -45,9 +45,6 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1xaj742" sourceRef="Activity_1uzicf2" targetRef="Event_0atskyd" />
     <bpmn:endEvent id="Event_0atskyd">
-      <bpmn:extensionElements>
-        <camunda:executionListener delegateExpression="${downloadLinkNotifier}" event="end" />
-      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1xaj742</bpmn:incoming>
     </bpmn:endEvent>
   </bpmn:process>
