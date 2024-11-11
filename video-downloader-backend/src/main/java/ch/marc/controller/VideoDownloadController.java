@@ -29,6 +29,7 @@ public class VideoDownloadController {
     public ResponseEntity<Map<String, String>> startDownloadProcess(@RequestParam("url") String url) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("url", url);
+        variables.put("advanced", false);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1ua4l8j", variables);
         Map<String, String> response = new HashMap<>();
