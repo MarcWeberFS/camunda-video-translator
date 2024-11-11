@@ -41,12 +41,12 @@
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_1uzicf2" name="Generate Download Link" camunda:delegateExpression="${generateDownloadLinkDelegate}">
       <bpmn:incoming>Flow_1wi0v5y</bpmn:incoming>
-      <bpmn:outgoing>Flow_1xaj742</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kmn8mj</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1xaj742" sourceRef="Activity_1uzicf2" targetRef="Event_0atskyd" />
-    <bpmn:endEvent id="Event_0atskyd">
-      <bpmn:incoming>Flow_1xaj742</bpmn:incoming>
+    <bpmn:endEvent id="Event_0uaetw3">
+      <bpmn:incoming>Flow_1kmn8mj</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1kmn8mj" sourceRef="Activity_1uzicf2" targetRef="Event_0uaetw3" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1ua4l8j">
@@ -75,8 +75,8 @@
         <dc:Bounds x="690" y="77" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0atskyd_di" bpmnElement="Event_0atskyd">
-        <dc:Bounds x="952" y="99" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_0uaetw3_di" bpmnElement="Event_0uaetw3">
+        <dc:Bounds x="852" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_17td0b4_di" bpmnElement="Flow_17td0b4">
         <di:waypoint x="215" y="117" />
@@ -103,9 +103,9 @@
         <di:waypoint x="475" y="117" />
         <di:waypoint x="530" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1xaj742_di" bpmnElement="Flow_1xaj742">
+      <bpmndi:BPMNEdge id="Flow_1kmn8mj_di" bpmnElement="Flow_1kmn8mj">
         <di:waypoint x="790" y="117" />
-        <di:waypoint x="952" y="117" />
+        <di:waypoint x="852" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
