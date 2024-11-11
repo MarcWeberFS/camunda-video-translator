@@ -5,6 +5,7 @@ function App() {
   const [url, setUrl] = useState('');
   const [message, setMessage] = useState('');
   const [downloadLink, setDownloadLink] = useState(null);
+  const [processInstanceId, setProcessInstanceId] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,8 +19,10 @@ function App() {
 
       if (response.ok) {
         const result = await response.text();
+        const instanceId = result.match(/process instance ID: (.+)/)[1]; // Extracts processInstanceId
+        setProcessInstanceId(instanceId);
         setMessage(result);
-        pollForDownloadLink();
+        pollForDownloadLink(instanceId);
       } else {
         setMessage("Failed to start download process.");
       }
@@ -29,10 +32,10 @@ function App() {
     }
   };
 
-  const pollForDownloadLink = async () => {
+  const pollForDownloadLink = async (instanceId) => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await fetch(`http://3.127.36.67/api/download-link`);
+        const response = await fetch(`http://3.127.36.67/api/download-link?processInstanceId=${instanceId}`);
         if (response.ok) {
           const result = await response.json();
           if (result.downloadLink) {
