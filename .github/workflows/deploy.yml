@@ -3,7 +3,7 @@ name: Build, Deploy, and Run on EC2
 on:
   push:
     branches:
-      - master
+      - 6-service-downloading-videos-from-instagram
 
 jobs:
   build-deploy:
