@@ -2,9 +2,14 @@ import sys
 import instaloader
 import boto3
 import os
-import shutil  # Import shutil for removing non-empty directories
+import shutil
 
 def download_video(url, s3_bucket_name, s3_folder):
+    # Get Instagram credentials from environment variables
+    username = os.getenv("INSTAGRAM_USERNAME")
+    password = os.getenv("INSTAGRAM_PASSWORD")
+
+    # Initialize Instaloader with credentials
     loader = instaloader.Instaloader(
         download_comments=False,
         download_geotags=False,
@@ -13,7 +18,19 @@ def download_video(url, s3_bucket_name, s3_folder):
         save_metadata=False
     )
 
-    shortcode = url.split('/')[-2]  # Extract shortcode from the URL
+    if username and password:
+        try:
+            loader.login(username, password)
+            print("Logged in to Instagram successfully.")
+        except Exception as login_error:
+            print(f"Failed to login: {login_error}")
+            return None
+    else:
+        print("Instagram credentials are not set in environment variables.")
+        return None
+
+    # Extract shortcode from the URL
+    shortcode = url.split('/')[-2]
     post = instaloader.Post.from_shortcode(loader.context, shortcode)
     loader.download_post(post, target=shortcode)
 
@@ -54,6 +71,7 @@ if __name__ == "__main__":
         s3_folder = sys.argv[3]
         try:
             s3_url = download_video(url, s3_bucket_name, s3_folder)
-            print(f"Download completed. S3 URL: {s3_url}")
+            if s3_url:
+                print(f"Download completed. S3 URL: {s3_url}")
         except Exception as e:
             print(f"An error occurred: {e}")
