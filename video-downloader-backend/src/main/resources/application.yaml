@@ -16,10 +16,5 @@ video:
   downloader:
     script-path: C:/Code/video-downloader/video-downloader-backend/src/main/resources/scripts/video_downloader.py
 
-logging:
-  level:
-    root: INFO
-    org.camunda.bpm: DEBUG
-    org.camunda.bpm.engine.persistence: TRACE
 
 
