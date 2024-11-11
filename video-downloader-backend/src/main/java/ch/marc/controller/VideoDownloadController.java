@@ -42,7 +42,7 @@ public class VideoDownloadController {
     
     @GetMapping("/download-link")
     public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
-        log.info("Process instance ID: {}", processInstanceId); 
+        log.error("Process instance ID: {}", processInstanceId); 
     
         HistoricVariableInstance historicVariableInstance = historyService
                 .createHistoricVariableInstanceQuery()
@@ -50,7 +50,7 @@ public class VideoDownloadController {
                 .variableName("downloadLink")
                 .singleResult();
     
-        log.info("Historic Variable Instance: {}", historicVariableInstance);
+        log.error("Historic Variable Instance: {}", historicVariableInstance);
     
         if (historicVariableInstance != null && historicVariableInstance.getValue() != null) {
             String downloadLink = (String) historicVariableInstance.getValue();
