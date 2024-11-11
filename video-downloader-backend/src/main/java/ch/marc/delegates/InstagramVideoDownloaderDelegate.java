@@ -26,8 +26,8 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
     private String downloadInstagramVideo(String url, String s3BucketName, String s3Folder) {
         String result = "";
         try {
-            String pythonExecutable = "python";
-            String scriptPath = "/home/ec2-user/scripts/video_downloader.py";
+            String pythonExecutable = "python3";
+            String scriptPath = "/home/ec2-user/scripts/video_downloader.py";            
 
             ProcessBuilder processBuilder = new ProcessBuilder(
                     pythonExecutable,
