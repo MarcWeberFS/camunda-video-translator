@@ -37,15 +37,28 @@ public class VideoDownloadController {
         return ResponseEntity.ok(response);
     }
 
+    @Autowired
+    private HistoryService historyService;
+    
     @GetMapping("/download-link")
-    public ResponseEntity<String> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
-        // Log the process instance ID to confirm it's being passed correctly
-        System.out.println("Received processInstanceId: " + processInstanceId);
+    public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
+        log.error("Process instance ID: {}", processInstanceId); 
     
-        // Return a simple string response for testing
-        return ResponseEntity.ok("ProcessInstanceId received: " + processInstanceId);
+        HistoricVariableInstance historicVariableInstance = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .variableName("downloadLink")
+                .singleResult();
+    
+        log.error("Historic Variable Instance: {}", historicVariableInstance);
+    
+        if (historicVariableInstance != null && historicVariableInstance.getValue() != null) {
+            String downloadLink = (String) historicVariableInstance.getValue();
+            return ResponseEntity.ok(Collections.singletonMap("downloadLink", downloadLink));
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonMap("message", "Download link is not ready yet or process not found."));
+        }
     }
-    
     
 
 }
