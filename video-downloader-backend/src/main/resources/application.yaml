@@ -18,6 +18,8 @@ video:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     org.camunda.bpm: DEBUG
+    org.camunda.bpm.engine.persistence: TRACE
+
 
