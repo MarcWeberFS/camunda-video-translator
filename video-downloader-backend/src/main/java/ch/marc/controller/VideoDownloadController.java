@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,6 +19,8 @@ import java.util.Map;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://3.127.36.67, http://localhost:3000, http://localhost:8080")
 public class VideoDownloadController {
+
+    private static final Logger log = LoggerFactory.getLogger(VideoDownloadController.class);
 
     @Autowired
     private RuntimeService runtimeService;
@@ -39,7 +43,7 @@ public class VideoDownloadController {
     @GetMapping("/download-link")
     public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
 
-        System.out.println("Process instance ID: " + processInstanceId);
+        log.info("Process instance ID: {}", processInstanceId);
 
         HistoricVariableInstance historicVariableInstance = historyService
                 .createHistoricVariableInstanceQuery()
