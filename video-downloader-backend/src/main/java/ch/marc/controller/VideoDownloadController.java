@@ -1,6 +1,8 @@
 package ch.marc.controller;
 
+import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,14 +33,23 @@ public class VideoDownloadController {
         return ResponseEntity.ok(response);
     }
 
+    @Autowired
+    private HistoryService historyService;
+
     @GetMapping("/download-link")
     public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
-        String downloadLink = (String) runtimeService.getVariable(processInstanceId, "downloadLink");
+        HistoricVariableInstance historicVariableInstance = historyService
+                .createHistoricVariableInstanceQuery()
+                .processInstanceId(processInstanceId)
+                .variableName("downloadLink")
+                .singleResult();
 
-        if (downloadLink != null) {
+        if (historicVariableInstance != null && historicVariableInstance.getValue() != null) {
+            String downloadLink = (String) historicVariableInstance.getValue();
             return ResponseEntity.ok(Collections.singletonMap("downloadLink", downloadLink));
         } else {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonMap("message", "Download link is not ready yet."));
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonMap("message", "Download link is not ready yet or process not found."));
         }
     }
+
 }

@@ -6,6 +6,7 @@ camunda.bpm.admin-user:
 
 camunda:
   bpm:
+    history-level: full
     generic-properties:
       properties:
         historyTimeToLive: 5
