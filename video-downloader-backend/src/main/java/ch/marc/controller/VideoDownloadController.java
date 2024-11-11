@@ -38,11 +38,16 @@ public class VideoDownloadController {
 
     @GetMapping("/download-link")
     public ResponseEntity<Map<String, String>> getDownloadLink(@RequestParam("processInstanceId") String processInstanceId) {
+
+        System.out.println("Process instance ID: " + processInstanceId);
+
         HistoricVariableInstance historicVariableInstance = historyService
                 .createHistoricVariableInstanceQuery()
                 .processInstanceId(processInstanceId)
                 .variableName("downloadLink")
                 .singleResult();
+
+        System.out.println("############# " + historicVariableInstance);
 
         if (historicVariableInstance != null && historicVariableInstance.getValue() != null) {
             String downloadLink = (String) historicVariableInstance.getValue();
