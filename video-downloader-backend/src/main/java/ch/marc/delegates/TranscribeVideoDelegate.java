@@ -15,11 +15,14 @@ public class TranscribeVideoDelegate implements JavaDelegate {
         String downloadLink = (String) execution.getVariable("downloadLink");
 
         String s3Uri = downloadLink.replace("https://video-download-temp.s3.amazonaws.com/", "s3://video-download-temp/");
+        String videoId = s3Uri.substring(s3Uri.lastIndexOf("/") + 1, s3Uri.lastIndexOf("."));
+
+        execution.setVariable("videoId", videoId);
 
         TranscribeClient transcribeClient = TranscribeClient.builder().build();
 
         StartTranscriptionJobRequest transcriptionJobRequest = StartTranscriptionJobRequest.builder()
-            .transcriptionJobName("TranscriptionJob_" + System.currentTimeMillis())
+            .transcriptionJobName("TranscriptionJob_" + videoId)
             .languageCode(LanguageCode.EN_US)
             .mediaFormat(MediaFormat.MP4)
             .media(Media.builder().mediaFileUri(s3Uri).build())
