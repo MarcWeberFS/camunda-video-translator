@@ -22,6 +22,9 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
         String s3BucketName = "video-download-temp";
         String s3Folder = "instagram-videos";
 
+        execution.setVariable("bucketName", s3BucketName);
+        execution.setVariable("folder", s3Folder);
+
         String result = downloadInstagramVideo(url, s3BucketName, s3Folder);
 
         System.out.println("Download result: " + result);

@@ -54,6 +54,8 @@ jobs:
           USER: ${{ secrets.AWS_EC2_USER }}
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          INSTAGRAM_USERNAME: ${{ secrets.INSTAGRAM_USERNAME }}
+          INSTAGRAM_PASSWORD: ${{ secrets.INSTAGRAM_PASSWORD }}
         run: |
           echo "${{ secrets.AWS_EC2_PEM }}" > /tmp/key.pem
           chmod 600 /tmp/key.pem
@@ -68,6 +70,13 @@ jobs:
             docker rm backend frontend || true
             docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
             docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
-            docker run -d --network=my-app-network --name backend -p 8080:8080 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
-            docker run -d --network=my-app-network --name frontend -p 80:80 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
+
+            # Run backend and frontend with Instagram credentials passed as environment variables
+            docker run -d --network=my-app-network --name backend -p 8080:8080 \
+              -e INSTAGRAM_USERNAME="$INSTAGRAM_USERNAME" \
+              -e INSTAGRAM_PASSWORD="$INSTAGRAM_PASSWORD" \
+              $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
+
+            docker run -d --network=my-app-network --name frontend -p 80:80 \
+              $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
           EOF
