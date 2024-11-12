@@ -30,6 +30,8 @@ public class VideoDownloadController {
         Map<String, Object> variables = new HashMap<>();
         variables.put("url", url);
         variables.put("advanced", true);
+        variables.put("sourceLanguage", "en");
+        variables.put("targetLanguage", "de");
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1ua4l8j", variables);
         Map<String, String> response = new HashMap<>();
