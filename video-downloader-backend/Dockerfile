@@ -19,7 +19,7 @@ COPY src/main/resources/scripts/video_downloader.py /app/scripts/
 
 # Decode the session file from the INSTA_SESSION environment variable
 ARG INSTA_SESSION
-RUN echo $INSTA_SESSION | base64 -d > /app/session-mxrcweber
+RUN echo "$INSTA_SESSION" | base64 -d > /app/session-mxrcweber
 
 # Set environment variable for Instaloader to use the session file
 ENV INSTALOADER_SESSIONFILE="/app/session-mxrcweber"
