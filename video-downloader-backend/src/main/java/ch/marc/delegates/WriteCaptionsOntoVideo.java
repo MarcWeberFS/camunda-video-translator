@@ -74,7 +74,10 @@
             String formattedSrtPath = utf8SrtPath.toString().replace("\\", "/").replace(":", "\\:");
             
             String command = String.format("ffmpeg -i \"%s\" -vf subtitles='%s' -c:a copy \"%s\"",
-                    videoFilePath, formattedSrtPath, outputFilePath);
+            new File(videoFilePath).getAbsolutePath(),
+            new File(formattedSrtPath).getAbsolutePath(),
+            new File(outputFilePath).getAbsolutePath());
+    
             
             System.out.println("Executing FFmpeg command: " + command);
             
