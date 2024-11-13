@@ -11,6 +11,9 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
+# Create a temporary directory for file operations
+RUN mkdir /app/temp
+
 # Copy the built JAR file into the container
 COPY target/*.jar app.jar
 
