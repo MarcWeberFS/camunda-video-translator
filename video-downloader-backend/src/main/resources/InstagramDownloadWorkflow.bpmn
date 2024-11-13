@@ -39,10 +39,6 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${advanced==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1rdrtnn" sourceRef="Activity_1ombwrr" targetRef="Activity_1e3vfll" />
-    <bpmn:task id="Activity_0ghmzhn" name="Add Captions To Video">
-      <bpmn:incoming>Flow_0q66msg</bpmn:incoming>
-      <bpmn:outgoing>Flow_1nnbcnd</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0q66msg" sourceRef="Activity_1e3vfll" targetRef="Activity_0ghmzhn" />
     <bpmn:exclusiveGateway id="Gateway_1bf3qhf">
       <bpmn:incoming>Flow_0sarfuf</bpmn:incoming>
@@ -59,6 +55,10 @@
     <bpmn:serviceTask id="Activity_1e3vfll" name="Translate Transcription" camunda:delegateExpression="${translateVideoDelegate}">
       <bpmn:incoming>Flow_1rdrtnn</bpmn:incoming>
       <bpmn:outgoing>Flow_0q66msg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0ghmzhn" name="Add Captions To Video" camunda:delegateExpression="${writeCaptionsOntoVideo}">
+      <bpmn:incoming>Flow_0q66msg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nnbcnd</bpmn:outgoing>
     </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -84,18 +84,17 @@
       <bpmndi:BPMNShape id="Gateway_0l2ncfn_di" bpmnElement="Gateway_0l2ncfn" isMarkerVisible="true">
         <dc:Bounds x="725" y="92" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ghmzhn_di" bpmnElement="Activity_0ghmzhn">
-        <dc:Bounds x="1260" y="190" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1bf3qhf_di" bpmnElement="Gateway_1bf3qhf" isMarkerVisible="true">
-        <dc:Bounds x="1385" y="92" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0n8jbux_di" bpmnElement="Activity_1ombwrr">
         <dc:Bounds x="810" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1pa49ir_di" bpmnElement="Activity_1e3vfll">
         <dc:Bounds x="980" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1bf3qhf_di" bpmnElement="Gateway_1bf3qhf" isMarkerVisible="true">
+        <dc:Bounds x="1315" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09v5cnc_di" bpmnElement="Activity_0ghmzhn">
+        <dc:Bounds x="1170" y="190" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_17td0b4_di" bpmnElement="Flow_17td0b4">
         <di:waypoint x="215" y="117" />
@@ -111,7 +110,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0sarfuf_di" bpmnElement="Flow_0sarfuf">
         <di:waypoint x="775" y="117" />
-        <di:waypoint x="1385" y="117" />
+        <di:waypoint x="1315" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k0ot69_di" bpmnElement="Flow_0k0ot69">
         <di:waypoint x="750" y="142" />
@@ -124,19 +123,19 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0q66msg_di" bpmnElement="Flow_0q66msg">
         <di:waypoint x="1080" y="230" />
-        <di:waypoint x="1260" y="230" />
+        <di:waypoint x="1170" y="230" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1nnbcnd_di" bpmnElement="Flow_1nnbcnd">
-        <di:waypoint x="1360" y="230" />
-        <di:waypoint x="1410" y="230" />
-        <di:waypoint x="1410" y="142" />
+        <di:waypoint x="1270" y="230" />
+        <di:waypoint x="1340" y="230" />
+        <di:waypoint x="1340" y="142" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g1t3hq_di" bpmnElement="Flow_1g1t3hq">
         <di:waypoint x="680" y="117" />
         <di:waypoint x="725" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pf7l1x_di" bpmnElement="Flow_1pf7l1x">
-        <di:waypoint x="1435" y="117" />
+        <di:waypoint x="1365" y="117" />
         <di:waypoint x="1542" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
