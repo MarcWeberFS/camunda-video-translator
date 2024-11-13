@@ -41,8 +41,10 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+          INSTA_SESSION: ${{ secrets.INSTA_SESSION }}
         run: |
-          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend ./video-downloader-backend
+          docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend \
+            --build-arg INSTA_SESSION="$INSTA_SESSION" ./video-downloader-backend
           docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend ./video-downloader-frontend
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-backend
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/video-downloader-frontend
