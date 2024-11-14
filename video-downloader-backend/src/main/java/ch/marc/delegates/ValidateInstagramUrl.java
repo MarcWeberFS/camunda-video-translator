@@ -17,7 +17,7 @@ public class ValidateInstagramUrl implements JavaDelegate {
             urlType = "instagram";
             System.out.println("Instagram URL detected");
             validateUrl = true;
-        } else if (url.startsWith("https://youtube.com/")) {
+        } else if (url.startsWith("https://www.youtube.com/")) {
             urlType = "youtube";
             System.out.println("Youtube URL detected");
             validateUrl = true;

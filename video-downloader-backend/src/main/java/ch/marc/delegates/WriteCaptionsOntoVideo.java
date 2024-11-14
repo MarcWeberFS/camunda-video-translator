@@ -22,7 +22,8 @@
     import com.ibm.icu.text.CharsetDetector;
     import com.ibm.icu.text.CharsetMatch;
 
-    import software.amazon.awssdk.core.sync.RequestBody;
+import ch.marc.model.Translate;
+import software.amazon.awssdk.core.sync.RequestBody;
     import software.amazon.awssdk.services.s3.S3Client;
     import software.amazon.awssdk.services.s3.model.GetObjectRequest;
     import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -35,7 +36,8 @@
             String videoId = (String) execution.getVariable("videoId");
             String s3BucketName = "video-download-temp";
             String s3Folder = "instagram-videos";
-            String translatedText = (String) execution.getVariable("translatedText");
+
+            Translate translate = (Translate) execution.getVariable("translatedText");
 
             String tempDir = System.getProperty("java.io.tmpdir");
             Path videoFilePath = Paths.get(tempDir, videoId + ".mp4");
@@ -45,8 +47,11 @@
             if (downloadPath == null) {
                 throw new RuntimeException("Failed to download the video from S3.");
             }
+            
+            System.out.println(translate.getText());
+            System.out.println(translate.getText().toString());
 
-            String srtFilePath = writeSrtFile(translatedText, videoId);
+            String srtFilePath = writeSrtFile(translate.getText().toString(), videoId);
 
             String outputFilePath = Paths.get(tempDir, videoId + "_translated.mp4").toString();
             embedSubtitles(videoFilePath.toString(), srtFilePath, outputFilePath);

@@ -10,6 +10,8 @@ camunda:
     generic-properties:
       properties:
         historyTimeToLive: 5
+        history: "full"
+        jobExecutorActivate: true
 
 
 video:

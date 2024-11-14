@@ -19,14 +19,25 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         
         String url = (String) execution.getVariable("url");
+        String urlType = (String) execution.getVariable("urlType");
         String s3BucketName = "video-download-temp";
         String s3Folder = "instagram-videos";
 
         execution.setVariable("bucketName", s3BucketName);
         execution.setVariable("folder", s3Folder);
 
-        // String result = downloadInstagramVideo(url, s3BucketName, s3Folder);
-        String result = downloadYouTubeVideo(url, s3BucketName, s3Folder);
+        System.out.println(urlType + " URL detected");
+
+        String result ="";
+
+        if (urlType.contains("instagram")) {
+            result = downloadInstagramVideo(url, s3BucketName, s3Folder);
+        } else if (urlType.contains("youtube")) {
+            result = downloadYouTubeVideo(url, s3BucketName, s3Folder);
+        } else {
+            result = "Invalid URL: Doesnt match Instagram or Youtube URL";
+        }
+
         System.out.println("Download result: " + result);
         
         execution.setVariable("downloadResult", result);
