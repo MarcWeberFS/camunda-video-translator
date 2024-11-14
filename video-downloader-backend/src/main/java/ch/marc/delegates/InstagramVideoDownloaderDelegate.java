@@ -25,8 +25,8 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
         execution.setVariable("bucketName", s3BucketName);
         execution.setVariable("folder", s3Folder);
 
-        String result = downloadInstagramVideo(url, s3BucketName, s3Folder);
-
+        // String result = downloadInstagramVideo(url, s3BucketName, s3Folder);
+        String result = downloadYouTubeVideo(url, s3BucketName, s3Folder);
         System.out.println("Download result: " + result);
         
         execution.setVariable("downloadResult", result);
@@ -38,8 +38,49 @@ public class InstagramVideoDownloaderDelegate implements JavaDelegate {
             String pythonExecutable = "python3";
             
             if (scriptPath == null || scriptPath.isEmpty()) {
-                System.out.println("VIDEO_DOWNLOADER_SCRIPT_PATH environment variable not set. Using default script path.");
-                scriptPath = "/app/scripts/video_downloader.py";
+                System.out.println("VIDEO_DOWNLOADER_INSTAGRAM_SCRIPT_PATH environment variable not set. Using default script path.");
+                scriptPath = "/app/scripts/video_downloader_instagram.py";
+            }
+
+            ProcessBuilder processBuilder = new ProcessBuilder(
+                    pythonExecutable,
+                    scriptPath,
+                    url,
+                    s3BucketName,
+                    s3Folder
+            );
+
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result += line + "\n";
+            }
+
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println(line);
+            }
+
+            process.waitFor();
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            result = "Error during download: " + e.getMessage();
+        }
+
+        return result;
+    }
+
+    private String downloadYouTubeVideo (String url, String s3BucketName, String s3Folder) {
+        String result = "";
+        try {
+            String pythonExecutable = "python3";
+            
+            if (scriptPath == null || scriptPath.isEmpty()) {
+                System.out.println("VIDEO_DOWNLOADER_YOUTUBE_SCRIPT_PATH environment variable not set. Using default script path.");
+                scriptPath = "/app/scripts/video_downloader_youtube.py";
             }
 
             ProcessBuilder processBuilder = new ProcessBuilder(

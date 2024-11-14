@@ -14,7 +14,7 @@ camunda:
 
 video:
   downloader:
-    script-path: C:/Code/video-downloader/video-downloader-backend/src/main/resources/scripts/video_downloader.py
+    script-path: C:/Code/video-downloader/video-downloader-backend/src/main/resources/scripts/video_downloader_youtube.py
 
 
 

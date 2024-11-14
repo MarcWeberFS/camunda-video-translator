@@ -12,7 +12,7 @@ public class ValidateInstagramUrl implements JavaDelegate {
         String url = (String) execution.getVariable("url");
         boolean validateUrl = false;
         System.out.println("URL: " + url);
-        if (url == null || !url.startsWith("https://www.instagram.com/")) {
+        if (url == null || !url.startsWith("https://www.instagram.com/") || !url.startsWith("https://youtube.com/")) {
             validateUrl = false;
         } else {
             System.out.println("Valid Instagram URL");
