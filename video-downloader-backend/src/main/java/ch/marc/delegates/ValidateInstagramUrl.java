@@ -11,14 +11,21 @@ public class ValidateInstagramUrl implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         String url = (String) execution.getVariable("url");
         boolean validateUrl = false;
+        String urlType = "";
         System.out.println("URL: " + url);
-        if (url == null || !url.startsWith("https://www.instagram.com/") || !url.startsWith("https://youtube.com/")) {
-            validateUrl = false;
-        } else {
-            System.out.println("Valid Instagram URL");
+        if (url.startsWith("https://www.instagram.com/")) {
+            urlType = "instagram";
+            System.out.println("Instagram URL detected");
             validateUrl = true;
+        } else if (url.startsWith("https://youtube.com/")) {
+            urlType = "youtube";
+            System.out.println("Youtube URL detected");
+            validateUrl = true;
+        } else {
+            System.out.println("Invalid URL: Doesnt match Instagram or Youtube URL");
+            validateUrl = false;
         }
-
+        execution.setVariable("urlType", urlType);
         execution.setVariable("validateUrl", validateUrl);
     }
     
