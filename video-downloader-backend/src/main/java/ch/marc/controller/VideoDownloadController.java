@@ -26,12 +26,16 @@ public class VideoDownloadController {
     private RuntimeService runtimeService;
 
     @PostMapping("/start-download")
-    public ResponseEntity<Map<String, String>> startDownloadProcess(@RequestParam("url") String url) {
+    public ResponseEntity<Map<String, String>> startDownloadProcess(
+            @RequestParam("url") String url,
+            @RequestParam("advanced") boolean advanced,
+            @RequestParam("sourceLanguage") String sourceLanguage,
+            @RequestParam("targetLanguage") String targetLanguage) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("url", url);
-        variables.put("advanced", true);
-        variables.put("sourceLanguage", "en");
-        variables.put("targetLanguage", "de");
+        variables.put("advanced", advanced);
+        variables.put("sourceLanguage", sourceLanguage);
+        variables.put("targetLanguage", targetLanguage);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1ua4l8j", variables);
         Map<String, String> response = new HashMap<>();
@@ -39,6 +43,7 @@ public class VideoDownloadController {
 
         return ResponseEntity.ok(response);
     }
+
 
     @Autowired
     private HistoryService historyService;
