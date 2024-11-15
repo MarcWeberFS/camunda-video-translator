@@ -2,6 +2,7 @@ package ch.marc.delegates;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -37,12 +38,13 @@ public class TranslateVideoDelegate implements JavaDelegate {
                 .build();
 
         try (ResponseInputStream s3ObjectStream = s3Client.getObject(getObjectRequest);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(s3ObjectStream))) {
+              BufferedReader reader = new BufferedReader(new InputStreamReader(s3ObjectStream, StandardCharsets.UTF_8))) {
+
 
             String srtContent = reader.lines().collect(Collectors.joining("\n"));
-            //System.out.println("Original SRT content:" + srtContent);
+            System.out.println("Original SRT content:" + srtContent);
 
-            TranslateTextRequest translateTextRequest = TranslateTextRequest.builder()
+            TranslateTextRequest translateTextRequest = TranslateTextRequest.builder()        
                     .sourceLanguageCode(sourceLanguage)
                     .targetLanguageCode(targetLanguage)
                     .text(srtContent)
@@ -51,7 +53,7 @@ public class TranslateVideoDelegate implements JavaDelegate {
             TranslateTextResponse translateTextResponse = translateClient.translateText(translateTextRequest);
             String translatedText = translateTextResponse.translatedText();
 
-            //System.out.println("Translated SRT content:\n" + translatedText);
+            System.out.println("Translated SRT content:\n" + translatedText);
 
             Translate translate = new Translate();
             // Text fields inside of h2 database are limitted to 4000 characters. Store the object (blob) instead.

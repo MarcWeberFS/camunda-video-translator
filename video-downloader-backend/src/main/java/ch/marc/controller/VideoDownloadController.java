@@ -37,6 +37,8 @@ public class VideoDownloadController {
         variables.put("sourceLanguage", sourceLanguage);
         variables.put("targetLanguage", targetLanguage);
 
+        System.out.println("URL: " + url + " Advanced: " + advanced + " Source Language: " + sourceLanguage + " Target Language: " + targetLanguage);
+
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_1ua4l8j", variables);
         Map<String, String> response = new HashMap<>();
         response.put("processInstanceId", processInstance.getId());
