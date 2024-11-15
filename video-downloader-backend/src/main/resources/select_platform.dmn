@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_09l2yev" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.27.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <decision id="Decision_1dcp1t8" name="Select Platform">
+    <decisionTable id="DecisionTable_0oa1i99">
+      <input id="Input_1" label="YouTube URL" camunda:inputVariable="url">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>contains(url, "youtube")</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0oj5gn4" label="Instagram URL">
+        <inputExpression id="LiteralExpression_1abzcoh" typeRef="string">
+          <text>contains(url, "instagram")</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="urlType" typeRef="string" />
+      <rule id="DecisionRule_1gbrm5j">
+        <inputEntry id="UnaryTests_0i0mgdr">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1mg83ri">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0bryfns">
+          <text>"youtube"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1oruf85">
+        <inputEntry id="UnaryTests_0bwotm0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0eqxakm">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0uja7nd">
+          <text>"instagram"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_1dcp1t8">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

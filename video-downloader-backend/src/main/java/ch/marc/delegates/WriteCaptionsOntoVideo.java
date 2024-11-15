@@ -22,7 +22,8 @@
     import com.ibm.icu.text.CharsetDetector;
     import com.ibm.icu.text.CharsetMatch;
 
-    import software.amazon.awssdk.core.sync.RequestBody;
+import ch.marc.model.Translate;
+import software.amazon.awssdk.core.sync.RequestBody;
     import software.amazon.awssdk.services.s3.S3Client;
     import software.amazon.awssdk.services.s3.model.GetObjectRequest;
     import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -35,17 +36,22 @@
             String videoId = (String) execution.getVariable("videoId");
             String s3BucketName = "video-download-temp";
             String s3Folder = "instagram-videos";
-            String translatedText = (String) execution.getVariable("translatedText");
+
+            Translate translate = (Translate) execution.getVariable("translatedText");
 
             String tempDir = System.getProperty("java.io.tmpdir");
             Path videoFilePath = Paths.get(tempDir, videoId + ".mp4");
 
             String downloadPath = downloadVideo(videoId, s3BucketName, s3Folder);
+
             if (downloadPath == null) {
                 throw new RuntimeException("Failed to download the video from S3.");
             }
+            
+            System.out.println(translate.getText());
+            System.out.println(translate.getText().toString());
 
-            String srtFilePath = writeSrtFile(translatedText, videoId);
+            String srtFilePath = writeSrtFile(translate.getText().toString(), videoId);
 
             String outputFilePath = Paths.get(tempDir, videoId + "_translated.mp4").toString();
             embedSubtitles(videoFilePath.toString(), srtFilePath, outputFilePath);
@@ -73,16 +79,13 @@
             Path utf8SrtPath = convertToUtf8(srtFilePath);
             String formattedSrtPath = utf8SrtPath.toString().replace("\\", "/").replace(":", "\\:");
             
+            // Command should look like: ffmpeg -i "input.mp4" -vf subtitles="subtitles.srt" -c:a copy "output.mp4"
             String command = String.format("ffmpeg -i \"%s\" -vf subtitles='%s' -c:a copy \"%s\"",
-            new File(videoFilePath).getAbsolutePath(),
-            new File(formattedSrtPath).getAbsolutePath(),
-            new File(outputFilePath).getAbsolutePath());
-    
+                    videoFilePath, formattedSrtPath, outputFilePath);
             
             System.out.println("Executing FFmpeg command: " + command);
             
             Process process = Runtime.getRuntime().exec(command);
-
             Thread errorStreamReader = new Thread(() -> {
                 try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                     String errorLine;
@@ -108,7 +111,8 @@
             errorStreamReader.start();
             outputStreamReader.start();
             
-            if (!process.waitFor(30, TimeUnit.SECONDS)) { // 30-second timeout
+            // 30 second timeout, occasianally the process gets stuck and never returns an exit code, even though it completed successfully
+            if (!process.waitFor(30, TimeUnit.SECONDS)) {
                 process.destroy();
                 throw new RuntimeException("FFmpeg process timed out.");
             }
@@ -124,8 +128,9 @@
         
         
         
-
+        // https://www.baeldung.com/java-string-encode-utf-8
         private Path convertToUtf8(String originalSrtPath) throws IOException {
+            // SRT file is ASCII encoded and cannot interpet äöü characters, solution is to encode it in UTF-8
             Path originalPath = Paths.get(originalSrtPath);
             Path utf8Path = Paths.get(originalPath.getParent().toString(), originalPath.getFileName().toString().replace(".srt", "_utf8.srt"));
 

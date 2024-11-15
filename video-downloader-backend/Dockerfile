@@ -5,6 +5,7 @@ FROM openjdk:17-jdk-slim
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     pip3 install instaloader boto3 && \
+    pip3 install pytube boto3 && \
     apt-get install -y ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 

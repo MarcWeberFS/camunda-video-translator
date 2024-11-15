@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
+import ch.marc.model.Translate;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -39,7 +40,7 @@ public class TranslateVideoDelegate implements JavaDelegate {
              BufferedReader reader = new BufferedReader(new InputStreamReader(s3ObjectStream))) {
 
             String srtContent = reader.lines().collect(Collectors.joining("\n"));
-            System.out.println("Original SRT content:" + srtContent);
+            //System.out.println("Original SRT content:" + srtContent);
 
             TranslateTextRequest translateTextRequest = TranslateTextRequest.builder()
                     .sourceLanguageCode(sourceLanguage)
@@ -50,8 +51,13 @@ public class TranslateVideoDelegate implements JavaDelegate {
             TranslateTextResponse translateTextResponse = translateClient.translateText(translateTextRequest);
             String translatedText = translateTextResponse.translatedText();
 
-            System.out.println("Translated SRT content:\n" + translatedText);
-            execution.setVariable("translatedText", translatedText);
+            //System.out.println("Translated SRT content:\n" + translatedText);
+
+            Translate translate = new Translate();
+            // Text fields inside of h2 database are limitted to 4000 characters. Store the object (blob) instead.
+            translate.setText(translatedText);
+            
+            execution.setVariable("translatedText", translate);
 
         } catch (Exception e) {
             System.err.println("Error processing translation: " + e.getMessage());

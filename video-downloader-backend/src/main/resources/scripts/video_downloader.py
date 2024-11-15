@@ -1,52 +1,27 @@
 import sys
-import instaloader
 import boto3
 import os
-import shutil
+import yt_dlp
+import uuid
 
 def download_video(url, s3_bucket_name, s3_folder):
-    # Get Instagram credentials from environment variables
-    username = os.getenv("INSTAGRAM_USERNAME")
-    password = os.getenv("INSTAGRAM_PASSWORD")
-
-    # Initialize Instaloader with credentials
-    loader = instaloader.Instaloader(
-        download_comments=False,
-        download_geotags=False,
-        download_pictures=False,
-        download_video_thumbnails=False,
-        save_metadata=False
-    )
-
-    if username and password:
-        try:
-            loader.login(username, password)
-            print("Logged in to Instagram successfully.")
-        except Exception as login_error:
-            print(f"Failed to login: {login_error}")
-            return None
-    else:
-        print("Instagram credentials are not set in environment variables.")
+    ydl_opts = {
+        'format': 'best',
+        'outtmpl': '%(title)s.%(ext)s',
+    }
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=True)
+            video_file = ydl.prepare_filename(info_dict)
+            print(f"Downloaded video file: {video_file}")
+    except Exception as download_error:
+        print(f"Failed to download YouTube video: {download_error}")
         return None
-
-    # Extract shortcode from the URL
-    shortcode = url.split('/')[-2]
-    post = instaloader.Post.from_shortcode(loader.context, shortcode)
-    loader.download_post(post, target=shortcode)
-
-    # Find the downloaded video file
-    video_file = None
-    for file in os.listdir(shortcode):
-        if file.endswith(".mp4"):
-            video_file = os.path.join(shortcode, file)
-            break
-
-    if not video_file:
-        raise FileNotFoundError("Downloaded video file not found.")
 
     # Upload to S3
     s3 = boto3.client('s3')
-    s3_key = f"{s3_folder}/{shortcode}.mp4"
+    video_filename = str(uuid.uuid1()) + ".mp4"
+    s3_key = f"{s3_folder}/{video_filename}"
     try:
         s3.upload_file(video_file, s3_bucket_name, s3_key)
         print(f"Uploaded {video_file} to S3 bucket {s3_bucket_name} as {s3_key}")
@@ -54,9 +29,8 @@ def download_video(url, s3_bucket_name, s3_folder):
         print(f"Failed to upload video to S3: {upload_error}")
         raise
 
-    # Clean up: Delete the downloaded video file and folder
+    # Clean up: Delete the downloaded video file
     os.remove(video_file)
-    shutil.rmtree(shortcode)  # Remove the entire folder
 
     # Return S3 URL
     s3_url = f"https://{s3_bucket_name}.s3.amazonaws.com/{s3_key}"
@@ -64,7 +38,7 @@ def download_video(url, s3_bucket_name, s3_folder):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: python video_downloader.py <instagram_url> <s3_bucket_name> <s3_folder>")
+        print("Usage: python video_downloader_youtube.py <youtube_url> <s3_bucket_name> <s3_folder>")
     else:
         url = sys.argv[1]
         s3_bucket_name = sys.argv[2]

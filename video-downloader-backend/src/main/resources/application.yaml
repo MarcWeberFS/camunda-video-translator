@@ -10,11 +10,13 @@ camunda:
     generic-properties:
       properties:
         historyTimeToLive: 5
+        history: "full"
+        jobExecutorActivate: true
 
 
 video:
   downloader:
-    script-path: C:/Code/video-downloader/video-downloader-backend/src/main/resources/scripts/video_downloader.py
+    script-path: C:/Code/video-downloader/video-downloader-backend/src/main/resources/scripts/video_downloader_youtube.py
 
 
 
