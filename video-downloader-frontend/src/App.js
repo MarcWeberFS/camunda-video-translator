@@ -74,7 +74,7 @@ function App() {
   return (
     <div className="container mx-auto mt-10">
       <header>
-        <h1>Youtube Video Downloader</h1>
+        <h1>Youtube / Instagram Video Downloader</h1>
         <form onSubmit={handleSubmit}>
           <Input value={url} onChange={(e) => setUrl(e.target.value)} />
           <br />
