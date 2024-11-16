@@ -8,8 +8,8 @@ import SelectMenu from './components/SelectMenu'
 function App() {
   const [url, setUrl] = useState('')
   const [advanced, setAdvanced] = useState(false)
-  const [sourceLanguage, setSourceLanguage] = useState('')
-  const [targetLanguage, setTargetLanguage] = useState('')
+  const [sourceLanguage, setSourceLanguage] = useState('en')
+  const [targetLanguage, setTargetLanguage] = useState('de')
   const [message, setMessage] = useState('')
   const [downloadLink, setDownloadLink] = useState(null)
 
