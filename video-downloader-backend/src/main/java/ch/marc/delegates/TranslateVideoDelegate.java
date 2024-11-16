@@ -51,13 +51,14 @@ public class TranslateVideoDelegate implements JavaDelegate {
                     .build();
 
             TranslateTextResponse translateTextResponse = translateClient.translateText(translateTextRequest);
+            System.out.println("Translated Response Object: " + translateTextResponse);
             String translatedText = translateTextResponse.translatedText();
 
-            System.out.println("Translated SRT content:\n" + translatedText);
+            //System.out.println("Translated SRT content:\n" + translatedText);
 
             Translate translate = new Translate();
             // Text fields inside of h2 database are limitted to 4000 characters. Store the object (blob) instead.
-            translate.setText(translatedText);
+            translate.setText(translatedText.toString());
             
             execution.setVariable("translatedText", translate);
 

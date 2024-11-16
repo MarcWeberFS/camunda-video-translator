@@ -29,7 +29,7 @@ function LanguageSelector({ label, selectedLanguage, onChange }) {
   return (
     <Listbox value={defaultSelected} onChange={onChange}>
       <Listbox.Label className="block text-sm font-medium text-gray-900">{label}</Listbox.Label>
-      <div className="relative mt-2">
+      <div className="relative">
         <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm">
           <span className="block truncate">{defaultSelected.label}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -70,7 +70,7 @@ function LanguageSelector({ label, selectedLanguage, onChange }) {
 
 export default function SelectMenu({ sourceLanguage, targetLanguage, onChange1, onChange2 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       <LanguageSelector
         label="Source Language"
         selectedLanguage={sourceLanguage}

@@ -25,7 +25,7 @@ export default function Example({value, onChange}) {
           value={value}
           onChange={onChange}
           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6"
+          className="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm/6 focus:ring-0 focus:outline-none"
         />
       </div>
     )

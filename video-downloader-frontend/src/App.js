@@ -72,7 +72,7 @@ function App() {
   }
 
   return (
-    <div className="">
+    <div className="container mx-auto mt-10">
       <header>
         <h1>Youtube Video Downloader</h1>
         <form onSubmit={handleSubmit}>
@@ -80,12 +80,15 @@ function App() {
           <br />
           <Toggle checked={advanced} onChange={setAdvanced} />
           <br />
+          {advanced ? (
           <SelectMenu
-            sourceLanguage={sourceLanguage}
-            targetLanguage={targetLanguage}
-            onChange1={setSourceLanguage}
-            onChange2={setTargetLanguage}
-          />
+          sourceLanguage={sourceLanguage}
+          targetLanguage={targetLanguage}
+          onChange1={setSourceLanguage}
+          onChange2={setTargetLanguage}
+          /> 
+          ) : null}
+
           <br />
           <button
             type="submit"

@@ -6,6 +6,7 @@ import { Switch } from '@headlessui/react'
 export default function Example( { checked, onChange } ) {
   const [enabled, setEnabled] = useState(false)
   return (
+    <label className="flex items-center space-x-3">
     <Switch
       checked={checked}
       onChange={onChange}
@@ -17,5 +18,7 @@ export default function Example( { checked, onChange } ) {
         className="pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-5"
       />
     </Switch>
+    <span className="text-sm font-medium text-gray-900">Advanced Options to add captions in targeted language to video</span>
+    </label>
   )
 }
